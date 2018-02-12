@@ -1,0 +1,15 @@
+.jumbotron
+
+{
+    /* The image used */
+    background-image: url("images/Mini.jpg");
+    color: white;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: top;
+    min-height: 300px;
+    margin-top: 0px;
+    margin-bottom:20px;
+    max-width: 100%; 
+}
+
