@@ -1,0 +1,205 @@
+
+<!--
+
+Lego Mini App Controlled Lights And Game Project
+
+SOME LEGAL MUMBO JUMBO: THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY OR FITNESS
+FOR A PARTICULAR PURPOSE.  IT MAY OR MAY NOT WORK. IT MAY INFRINGE THE INTELLECTUAL PROPERTY RIGHTS OF OTHERS.
+IT MAY CAUSE INJURY OR DEATH -- TO YOU OR SOMEBODY ELSE. YOU MIGHT LOSE SOME OR ALL
+OF YOUR MONEY BY USING THIS SOFTWARE AND/OR ANY ASSOCIATED HARDWARE. TO THE MAXIMUM EXTENT PERMITTED BY LAW,
+PLUS 15%, I WILL NOT DEFEND OR INDEMNIFY YOU OR ANYBODY ELSE FOR ANY OF THESE THINGS. OR ANYTHING ELSE.
+
+ANY USE OF THIS SOFTWARE MEANS YOU HAVE AGREED TO ALL THAT.  SO THERE.
+
+
+-->
+
+
+<html charset="UTF-8">
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+  </head>
+
+   <body>
+   <style>
+   .container-fluid {
+    margin-left: 5%;
+    margin-right: 2%;
+   }
+
+  </style>
+
+ <div class="container-fluid">
+    <div class="row">
+    <h2 class="text-center">SET UP</h2>
+    <hr>
+    <h3 class="text-center">Auto Lights</h3> 
+    <form style="text-align: center">
+      <label class="radio-inline"><input type="radio" name="optradio" onclick="AutoOn();">Auto Lights On</label>
+      <label class="radio-inline"><input type="radio" name="optradio" value="" checked="checked" onclick="AutoOff();">Auto Lights Off</label>
+      <p>The Auto Lights feature is disabled when in game mode.</p>
+    <h3 class="text-center">Adjustment</h3>
+      <button type="button" onclick="LDRUp();">Increase</button>
+      <p>Lights will come on at higher light levels</p>
+      <button type="button" onclick="LDRDown();">Decrease</button>
+      <p>Lights will come on at lower light levels</p>
+    </div>
+  </form>
+   <form style="text-align: center">
+  <button  style="color:red" class="btn LDRReading" id = "LDRActual">Current light level reading is: </button>
+   <button  style="color:red" class="btn LDROn" id = "LDROn">Auto Lights will turn on when light level is below: </button> 
+   <button  style="color:red" class="btn LDROff" id = "LDROff">Auto Lights will turn off when light level is above: </button> 
+    </form>   
+  <hr>
+  <form style="text-align: center">
+  <h3 class="text-center">Sound</h3> 
+    <div class="row">
+      <label class="radio-inline"><input type="radio" name="optradio" value="" checked="checked" onclick="SoundOn();">Annoying Beep On</label>
+      <label class="radio-inline"><input type="radio" name="optradio" onclick="SoundOff();">Annoying Beep Off</label>
+  </form> 
+</div>
+<hr>
+  <h3 class="text-center">Time Zone</h3>        
+  <div class="row">   
+  <form style="text-align: center">
+  <select id="t" onchange="sendTZ();">
+    <option value="0">Select Time Zone</option>
+    <option value="-12">UCT-12</option>
+    <option value="-11">UCT-11</option>
+    <option value="-10">UCT-10</option>
+    <option value="-9">UCT-9</option>
+    <option value="-8">UCT-8</option>
+    <option value="-7">UCT-7</option>
+    <option value="-6">UCT-6</option>
+    <option value="-5">UCT-5 (Toronto Standard)</option>
+    <option value="-4">UCT-4 (Toronto DST)</option>
+    <option value="-3">UCT-3 (Legoland, CA)</option>
+    <option value="-2">UCT-2</option>
+    <option value="-1">UCT-1 (Cowley, UK /BST)</option>
+    <option value="0">UCT (Cowley, UK/GMT)</option>
+    <option value="1">UCT+1 (Legoland, Billund)</option>
+    <option value="2">UCT=2</option>
+    <option value="3">UCT+3</option>
+    <option value="4">UCT+4 (Legoland, Dubai)</option>
+    <option value="5">UCT+5</option>
+    <option value="6">UCT+6</option>
+    <option value="7">UCT+7</option>
+    <option value="8">UCT+8</option>
+    <option value="9">UCT+9 (Legoland, Japan)</option>
+    <option value="10">UCT+10</option>
+    <option value="11">UCT+11</option>
+    <option value="12">UCT+12</option>
+  </select>
+
+
+ <hr>
+ <h3 class="text-center">Reset High Score</h3>
+      <button type="button" onclick="Confirm();">Reset High Score Information</button>
+      <p></p>
+      <p>Only to be used if information is wrong.  No cheating!</p>
+      <p style="color:red" id="dialog"></p>
+</form>
+</div>  
+ <hr>
+    <h3 class="text-center">Instructions: Though You Shouldn't Really Need Them</h3> 
+    <p> The idea of the game should be fairly obvious so need not detain us here.  Note that after the game page loads the Mini must perform some housekeeping that generally takes about five seconds.  During this time the "disco" interior light is lit and the bottom button displays "INITIALIZING GAME MODE...". Trying to start a new game before the light goes out and "NEW GAME" appears might result in an error. This is a one-time thing when the game page loads and after that there is no need to wait between each subsequent game. A similar wait is required on loading the Controls page (indicated by "WAIT" on the horn button). Once "MINI" appears on the horn you are good to go. Yes, even this Set-Up page requires a bit of a wait before it is ready for user input. If you don't hear a beep after changing a setting (assuming you have not turned off the sound), it probably has not registered.</p>
+    <p> If you lose a game the Mini will perform a walk of shame process which includes replaying the correct sequence you just screwed up.  If you reach a new high score you will get to put your player name on the podium.  Nothing rude, please.
+    <p> If a page does not fully load try refreshing it as a first option. Worst case go back to the home screen and start again. Actually, worst case unplug the thing and really start again. Do not return to Mini Dealership or Lego Store.</p>
+  
+  <ul class="pager">
+    <li><a href="http://LegoMini.local/page1" onclick="lightsMode();">Mini Controls</a></li>
+    <li><a href="http://LegoMini.local/page2" onclick="gameMode();">Mini Game</a></li>
+  </ul>
+
+<a href="https://icons8.com/icon/92/link">Icons used on the "Controls" page are used under license from Icons8</a>
+<script>
+
+var connection = new WebSocket('ws://' + location.hostname + ':81/', ['arduino']);
+connection.onopen = function () {
+  connection.send('Connect ' + new Date());
+  setTimeout(MoodOff, 4500);
+};
+connection.onerror = function (error) {
+  console.log('WebSocket Error ', error);
+};
+connection.onmessage = function (e) {
+  console.log('Server: ', e.data);
+  var LDRReadingText = document.getElementById('LDRActual');
+  var LDROnText = document.getElementById('LDROn');
+  var LDROffText = document.getElementById('LDROff');
+  if(e.data.slice(0,2)=="6:") LDRReadingText.innerHTML = 'Current light level reading is: ' + e.data.slice(2);
+  if(e.data.slice(0,2)=="7:") LDROnText.innerHTML = 'Auto Lights will turn on when light level is below: ' + e.data.slice(2);
+  if(e.data.slice(0,2)=="8:") LDROffText.innerHTML = 'Auto Lights will turn off when light level is above: ' + e.data.slice(2);
+};
+connection.onclose = function () {
+  console.log('WebSocket connection closed');
+};
+
+function sendTZ () {
+  var t = document.getElementById('t').value;
+  var tstr = 'Z' +  t.toString(8); 
+  console.log('Timezone: ' + tstr);
+  connection.send(tstr);  
+}
+ 
+  function AutoOn () {
+    connection.send("O");
+}
+
+function AutoOff () {
+    connection.send("P"); 
+}
+
+function SoundOn () {
+    connection.send("Q");
+}
+
+function SoundOff () {
+    connection.send("R");
+}
+
+ function gameMode () {
+    connection.send("S");
+}
+
+function lightsMode () {
+    connection.send("T");
+}
+
+function HighScore () {
+    connection.send("k");
+}
+
+function LDRUp() {
+   connection.send("V");
+}
+
+function LDRDown() {
+   connection.send("W");
+}
+
+function MoodOff() {
+   connection.send("D");
+}
+
+
+function Confirm()  {
+  var response;
+  var c = confirm("Are you sure you want to reset the high score and high scorer name?");
+  if (c == true)  {
+    response = "Reset Complete!";
+    connection.send("q");
+  } else  {
+    response = "Thought better of it huh?";
+  }
+  document.getElementById("dialog").innerHTML = response;
+}
+
+
+</script>
+</body>
+</html>

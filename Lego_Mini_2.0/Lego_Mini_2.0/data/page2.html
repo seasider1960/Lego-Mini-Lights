@@ -1,0 +1,316 @@
+
+
+<!--
+
+LEGO MINI LIGHTS AND GAME PROJECT.
+
+  SOME LEGAL MUMBO JUMBO: THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY OR FITNESS
+  FOR A PARTICULAR PURPOSE.  IT MAY OR MAY NOT WORK. IT MAY INFRINGE THE INTELLECTUAL PROPERTY RIGHTS OF OTHERS.
+  IT MAY CAUSE INJURY OR DEATH -- TO YOU, SOMEBODY ELSE OR, HEAVEN FORBID, YOUR CAT. YOU MIGHT LOSE SOME OR ALL
+  OF YOUR MONEY BY USING THIS SOFTWARE AND/OR ANY ASSOCIATED HARDWARE. TO THE MAXIMUM EXTENT PERMITTED BY LAW,
+  PLUS 15%, I WILL NOT DEFEND OR INDEMNIFY YOU OR ANYBODY ELSE FOR ANY OF THESE THINGS. OR ANYTHING ELSE.
+
+  ANY USE OF THIS SOFTWARE MEANS YOU HAVE AGREED TO ALL THAT.  SO THERE.
+
+-->
+
+
+<html charset="UTF-8">
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="styles_Mini_Game.css">
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+ 	
+
+<style>
+
+h2 {
+  color: black;
+  font-size: 250%;
+    position: absolute;
+    top: 0px;
+    left: 10%;
+  font-family: arial;
+  
+}
+
+h3 {
+  color: black;
+  font-size: 250%;
+    position: absolute;
+    top: 238px;
+    left: 70%;
+  font-family: arial;
+  
+}
+
+img {
+  position: absolute;
+    top: 350px;
+    left: 31%; 
+    
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="background">
+  <div class="container-fluid">
+    <div class="brick">
+      <div class='side1'></div>
+      <div class='side2'></div>
+      <div class='side3-bin'>
+      <div class='side3'></div>
+      </div>
+      <div class="stud1"></div>
+      <div class="stud2"></div>
+      <div class="stud3"></div>
+      <div class="stud4"></div>
+      <div class="stud5"></div>
+      <div class="stud6"></div>
+      <div class="stud7"></div>
+      <div class="stud8"></div>
+      <div class="text-center">
+      <h2>LET'S</h2>
+      <h3>PLAY!</h3>
+      <img src="Mini_LogoS.jpg" alt="Mini Logo">          
+      <button class="btn headlightL" onclick="LeftHL();"></button>
+      <button class="btn foglightL" onclick="LeftFL();"></button>
+      <button class="btn foglightR" onclick="RightFL();"></button>
+      <button class="btn headlightR" onclick="RightHL();"></button>
+      <button class="btn indicatorL" onclick="LeftTurn();"></button>
+      <button class="btn indicatorR" onclick="RightTurn();"></button>
+      <button class="btn countdownC" id = "cdc">0</button>
+      <button class="btn countdownT" id = "cdt">10s</button>
+      <button class="btn highScoreTag" id = "hst">Top Score</button>
+      <button class="btn highNameTag" id = "hsnt">On The Podium</button>
+      <button class="btn highScoreN" id = "hsn">WAIT</button>
+      <button class="btn highScoreS" id = "hss">WAIT</button>
+      <button class="block S" id= "show" onclick="showSequence();">GAME OVER!</button>
+      <button class="block N" id= "game" onclick="newGame();">INITIALIZING GAME MODE...</button>
+      <ul class="pager">
+        <li><a href="http://LegoMini.local" onclick="lightsMode();">Quit Game Mode</a></li>
+      </ul>
+
+<script>
+var count = 0;
+var countdownC = 0;
+var timeLeft = 10;
+var timerId; 
+var elem = document.getElementById('cdt');
+
+var connection = new WebSocket('ws://' + location.hostname + ':81/', ['arduino']);
+connection.onopen = function () {
+  connection.send('Connect ' + new Date());
+  setTimeout(gameMode, 4000);
+  setTimeout(MoodOff, 4500);
+  setTimeout(newGame, 5000);
+  setTimeout(Wait, 5500);
+};
+connection.onerror = function (error) {
+  console.log('WebSocket Error ', error);
+};
+connection.onmessage = function (e) {
+  console.log('Server: ', e.data);
+  var showText = document.getElementById('show');
+  var hssText = document.getElementById('hss');
+  var hsnText = document.getElementById('hsn');
+  if(e.data.slice(0,2)=="1:") showText.innerHTML = 'Show New Light Sequence: Level = ' + count;
+  if(e.data.slice(0,2)=="2:") {
+    showText.innerHTML = 'GAME OVER!';
+    clearInterval(timerId);
+    timeLeft = 10;
+  }
+  if(e.data.slice(0,2)=="3:") hssText.innerHTML = e.data.slice(2);
+  if(e.data.slice(0,2)=="4:") hsnText.innerHTML = e.data.slice(2);
+  if(e.data.slice(0,2)=="5:") highScore();
+};
+connection.onclose = function () {
+  console.log('WebSocket connection closed');
+};
+
+
+function MoodOff() {
+   connection.send("D");
+}
+
+function countdown () {
+  if (timeLeft == 0) {
+        cdt.innerHTML = "0";
+        connection.send("l");
+clearInterval(timerId);
+      } else {
+        cdt.innerHTML = timeLeft +"s";
+        timeLeft--;
+  }
+}
+
+function LeftHL () {
+  document.getElementById("cdc");
+  countdownC -= 1;
+  cdc.innerHTML =  countdownC;
+  clearInterval(timerId);
+  AllOff();
+  setTimeout(AllOff, 500);
+  if (countdownC == 0) {
+    timeLeft = 10;
+    cdt.innerHTML = timeLeft +"s";
+  } else  {
+    timerId = setInterval(countdown, 1000);
+    timeLeft = 10;
+  } 
+    connection.send("a"); 
+}
+
+function LeftFL () {
+  document.getElementById("cdc");
+  countdownC -= 1;
+  cdc.innerHTML =  countdownC;
+  clearInterval(timerId);
+  AllOff();
+  setTimeout(AllOff, 500);
+  if (countdownC == 0) {
+    timeLeft = 10;
+    cdt.innerHTML = timeLeft +"s";
+  } else  {
+    timerId = setInterval(countdown, 1000);
+    timeLeft = 10;
+  } 
+    connection.send("b");  
+}
+
+function RightFL () {
+  document.getElementById("cdc");
+  countdownC -= 1;
+  cdc.innerHTML =  countdownC;
+  clearInterval(timerId);
+  AllOff();
+  setTimeout(AllOff, 500);
+  if (countdownC == 0) {
+    timeLeft = 10;
+    cdt.innerHTML = timeLeft +"s";
+  } else  {
+    timerId = setInterval(countdown, 1000);
+    timeLeft = 10;
+  } 
+    connection.send("c"); 
+}
+
+function RightHL () {
+  document.getElementById("cdc");
+  countdownC -= 1;
+  cdc.innerHTML =  countdownC;
+  clearInterval(timerId);
+  AllOff();
+  setTimeout(AllOff, 500);
+  if (countdownC == 0) {
+    timeLeft = 10;
+    cdt.innerHTML = timeLeft +"s";
+  } else  {
+    timerId = setInterval(countdown, 1000);
+    timeLeft = 10;
+  } 
+    connection.send("d");
+}	
+
+function RightTurn () {
+  document.getElementById("cdc");
+  countdownC -= 1;
+  cdc.innerHTML =  countdownC;
+  clearInterval(timerId);
+  AllOff();
+  setTimeout(AllOff, 500);
+  if (countdownC == 0) {
+    timeLeft = 10;
+    cdt.innerHTML = timeLeft +"s";
+  } else  {
+    timerId = setInterval(countdown, 1000);
+    timeLeft = 10;
+  } 
+  connection.send("e");
+}
+
+function LeftTurn () {
+  document.getElementById("cdc");
+  countdownC -= 1;
+  cdc.innerHTML =  countdownC;
+  clearInterval(timerId);
+  AllOff();
+  setTimeout(AllOff, 600);
+  if (countdownC == 0) {
+    timeLeft = 10;
+    cdt.innerHTML = timeLeft +"s";
+  } else  {
+    timerId = setInterval(countdown, 1000);
+    timeLeft = 10;
+  } 
+   connection.send("f");
+} 
+
+function lightsMode () {
+    connection.send("T");
+}
+
+function gameMode () {
+    connection.send("S");
+}
+
+function AllOff () {
+    connection.send("j");
+}
+
+function showSequence () {
+  document.getElementById("show");
+  count += 1;
+  countdownC = count;
+  clearInterval(timerId);
+  timeLeft = 10;
+  show.innerHTML = "Show New Light Sequence: Level = " + count;
+  cdc.innerHTML = countdownC;
+  cdt.innerHTML = timeLeft +"s";
+  connection.send("g");
+}	
+
+function newGame () {
+  document.getElementById("show");
+  count = 0;
+  countdownC = 0;
+  clearInterval(timerId);
+  cdc.innerHTML = countdownC;
+  show.innerHTML = "Show New Light Sequence: Level = " + count;
+  cdt.innerHTML = timeLeft +"s";
+  connection.send("h"); 
+}
+
+function Wait () { 
+  document.getElementById("game");
+  clearInterval(timerId);
+  document.getElementById('game').style.backgroundColor = '#ffffff';
+  document.getElementById('game').style.color = 'black';
+  game.innerHTML = "NEW GAME";
+}          
+
+function highScore() {
+  var hsName;
+  var person = prompt("Enter New High Scorer Name (11 characters or less) ", "");
+  if (person == null || person == "") {
+    hsName = "ANON";
+  } else {
+    hsName = person;
+  }
+  document.getElementById("hsn").innerHTML = hsName;
+  connection.send("p" + person); 
+}
+
+</script>
+</body>
+</html>
+
+
+  

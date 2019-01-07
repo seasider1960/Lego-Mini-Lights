@@ -1,0 +1,89 @@
+
+<!--
+LEGO MINI LIGHTS AND GAME PROJECT.
+
+  SOME LEGAL MUMBO JUMBO: THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY OR FITNESS
+  FOR A PARTICULAR PURPOSE.  IT MAY OR MAY NOT WORK. IT MAY INFRINGE THE INTELLECTUAL PROPERTY RIGHTS OF OTHERS.
+  IT MAY CAUSE INJURY OR DEATH -- TO YOU, SOMEBODY ELSE OR, HEAVEN FORBID, YOUR CAT. YOU MIGHT LOSE SOME OR ALL
+  OF YOU MONEY BY USING THIS SOFTWARE AND/OR ANY ASSOCIATED HARDWARE. TO THE MAXIMUM EXTENT PERMITTED BY LAW,
+  PLUS 15%, I WILL NOT DEFEND OR INDEMNIFY YOU OR ANYBODY ELSE FOR ANY OF THESE THINGS. OR ANYTHING ELSE.
+
+  ANY USE OF THIS SOFTWARE MEANS YOU HAVE AGREED TO ALL THAT.  SO THERE.
+
+-->
+
+
+<html charset="UTF-8">
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="styles_Mini_Lights.css">
+    <link rel="apple-touch-icon" sizes="57x57" href="Mini_Icon57.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="Mini_Icon72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="Mini_Icon114.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="Mini_Icon144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="Mini_Icon152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="Mini_Icon180.png" />
+   <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+</head>
+  
+
+<body>
+
+<div class="background-image">
+  <div class="container-fluid">
+  <ul class="pager controls">
+    <li><a href="http://LegoMini.local/page1" onclick="lightsMode();">Controls</a></li>
+  </ul>
+  <ul class="pager game">
+    <li><a href="http://LegoMini.local/page2" onclick="gameMode();">Let's Play!</a></li>
+  </ul>
+  <ul class="pager setup">
+    <li><a href="http://LegoMini.local/page3">Set-Up</a></li>
+  </ul>
+
+<script>
+
+var connection = new WebSocket('ws://' + location.hostname + ':81/', ['arduino']);
+connection.onopen = function () {
+  connection.send('Connect ' + new Date());
+  setTimeout(MoodOff, 4000);
+  
+};
+connection.onerror = function (error) {
+  console.log('WebSocket Error ', error);
+};
+connection.onmessage = function (e) {
+  console.log('Server: ', e.data);
+};
+connection.onclose = function () {
+  console.log('WebSocket connection closed');
+};
+
+
+function lightsMode () {
+  
+    connection.send("T");
+   
+}
+
+function gameMode () {
+  
+    connection.send("S");
+   
+}
+
+function MoodOff() {
+   
+   connection.send("D");
+}
+
+</script>
+
+</body>
+</html>
+
+
+  

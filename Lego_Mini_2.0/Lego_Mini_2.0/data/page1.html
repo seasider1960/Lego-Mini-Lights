@@ -1,0 +1,371 @@
+
+<!--
+
+LEGO MINI LIGHTS AND GAME PROJECT.
+
+  SOME LEGAL MUMBO JUMBO: THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY OR FITNESS
+  FOR A PARTICULAR PURPOSE.  IT MAY OR MAY NOT WORK. IT MAY INFRINGE THE INTELLECTUAL PROPERTY RIGHTS OF OTHERS.
+  IT MAY CAUSE INJURY OR DEATH -- TO YOU, SOMEBODY ELSE OR, HEAVEN FORBID, YOUR CAT. YOU MIGHT LOSE SOME OR ALL
+  OF YOUR MONEY BY USING THIS SOFTWARE AND/OR ANY ASSOCIATED HARDWARE. TO THE MAXIMUM EXTENT PERMITTED BY LAW,
+  PLUS 15%, I WILL NOT DEFEND OR INDEMNIFY YOU OR ANYBODY ELSE FOR ANY OF THESE THINGS. OR ANYTHING ELSE.
+
+  ANY USE OF THIS SOFTWARE MEANS YOU HAVE AGREED TO ALL THAT.  SO THERE.
+
+-->
+
+
+<html charset="UTF-8">
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="styles_Mini_Controls.css">
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+ 	
+<style>
+
+
+h2 {
+  color: black;
+  font-size: 250%;
+    position: absolute;
+    top: 0px;
+    left: 10%;
+  font-family: arial;
+  
+}
+
+h3 {
+  color: black;
+  font-size: 250%;
+    position: absolute;
+    top: 241px;
+    left: 44%;
+  font-family: arial;
+  
+}
+
+#imageLogo {
+  position: absolute;
+    top: 166px;
+    left: 64%; 
+    transform: skewY(-30deg);
+}
+
+#imageHL {
+  position: absolute;
+    top: 118%;
+    left: -3%; 
+    
+}
+
+#imageFL {
+  position: absolute;
+    top: 118%;
+    left: 84%; 
+    
+}
+
+#imageL {
+  position: absolute;
+    top: 170%;
+    left: 10%; 
+    
+}
+
+#imageR {
+  position: absolute;
+    top: 170%;
+    left: 75%; 
+    
+}
+
+#imageH {
+  position: absolute;
+    top: 167%;
+    left: 43%; 
+    
+}
+
+#imageC {
+  position: absolute;
+    top: 203%;
+    left: -4%; 
+    
+}
+
+#imageM {
+  position: absolute;
+    top: 203%;
+    left: 88%; 
+    
+}
+
+</style>
+</head>
+  
+
+<body>
+
+
+<div class="background">
+  <div class="container-fluid">
+      <div class="brick">
+      <div class='side1'></div>
+      <div class='side2'></div>
+      <div class='side3-bin'>
+      <div class='side3'></div>
+      </div>
+      <div class="stud1"></div>
+      <div class="stud2"></div>
+      <div class="stud3"></div>
+      <div class="stud4"></div>
+      <div class="stud5"></div>
+      <div class="stud6"></div>
+      <div class="stud7"></div>
+      <div class="stud8"></div>
+      <div class="text-center">
+      <h2>LET'S</h2>
+      <h3>MOTOR!</h3>
+      <img src="Mini_LogoS.jpg" id = "imageLogo" alt="Mini Logo">        
+      <button class="btn headlight" id="HL" onclick="HLOnOff();"></button>
+      <img src="https://img.icons8.com/ios/50/000000/headlight.png" id="imageHL">
+      <button class="btn foglight" id="FL"  onclick="FLOnOff();"></button>
+      <img src="https://img.icons8.com/ios/50/000000/fog-lamp.png" id="imageFL">
+      <button class="btn horn" id="beep"  onclick="BeepBeep();">WAIT</button>
+      <button class="btn indicatorL" id="L" onclick="FlashL();"></button>
+      <img src="https://img.icons8.com/ios/50/000000/double-left.png" id="imageL">
+      <img src=""https://img.icons8.com/ios/50/000000/double-left.png"" id="imageL">
+      <button class="btn indicatorH" id="HZ"  onclick="HZOnOff();"></button>
+      <img src="https://img.icons8.com/ios/50/000000/error.png" id="imageH">
+      <button class="btn indicatorR" id="R"  onclick="FlashR();"></button>
+      <img src="https://img.icons8.com/ios/50/000000/double-right.png" id="imageR">
+      <button class="btn interiorW" id="CL"  onclick="CLOnOff();"></button>
+      <img src="https://img.icons8.com/ios/50/000000/light-on.png" id="imageC">
+      <button class="btn interiorM" id="ML"  onclick="MLOnOff();"></button>
+      <img src="https://img.icons8.com/ios/50/000000/disco-ball.png" id="imageM">
+    <ul class="pager home">
+      <li><a href="http://LegoMini.local/page3">Set Up</a></li>
+    </ul>
+    <ul class="pager game">
+      <li><a href="http://LegoMini.local/page2" onclick="gameMode();">Let's Play!</a></li>
+    </ul>
+  </div>
+</div>
+
+
+<script>
+var timer;
+var miliseconds = 500;
+var count = 0;
+var HLEnable = false;
+var FLEnable = false;
+var HZEnable = false;
+var HNEnable = false;
+var LEnable = false;
+var REnable = false;
+var CLEnable = false;
+var MLEnable = false;
+var intervalIdHZ;
+var intervalIdR;
+var intervalIdL;
+
+var connection = new WebSocket('ws://' + location.hostname + ':81/', ['arduino']);
+connection.onopen = function () {
+  connection.send('Connect ' + new Date());
+  setTimeout(lightsMode, 3000);
+  setTimeout(MoodOff, 5000);
+};
+connection.onerror = function (error) {
+  console.log('WebSocket Error ', error);
+};
+connection.onmessage = function (e) { 
+};
+connection.onclose = function () {
+  console.log('WebSocket connection closed');
+};
+
+function CLOnOff () {
+  CLEnable = ! CLEnable;
+  if (CLEnable) {
+    document.getElementById('CL').style.backgroundColor = '#FFD700';
+    connection.send("A");
+  } else {
+    document.getElementById('CL').style.backgroundColor = '#999';
+    connection.send("B");
+  }
+}
+
+function MLOnOff () {
+  CLEnable = ! CLEnable;
+  if (CLEnable) {
+    document.getElementById('ML').style.backgroundColor = '#9900ff';
+    connection.send("C");
+  } else {
+    document.getElementById('ML').style.backgroundColor = '#999';
+    connection.send("D");
+  }
+}
+
+function MoodOff() {
+   var beepText = document.getElementById('beep');
+   document.getElementById('beep').style.color = '#c9cfd8';
+   beepText.innerHTML = 'MINI';
+   connection.send("D");
+}
+
+function HLOnOff () {
+  HLEnable = ! HLEnable;
+  if (HLEnable) {
+    document.getElementById('HL').style.backgroundColor = '#ffffb3';
+    connection.send("E");
+  } else {
+    document.getElementById('HL').style.backgroundColor = '#999';
+    connection.send("F");
+  }
+}
+
+function FLOnOff () {
+  FLEnable = ! FLEnable;
+  if (FLEnable) {
+    document.getElementById('FL').style.backgroundColor = '#ffff00';
+    connection.send("G");
+  } else {
+    document.getElementById('FL').style.backgroundColor = '#999';
+    connection.send("H");
+  }
+}
+
+function setColorHZ() {
+    var x = document.getElementById('HZ');
+    x.style.backgroundColor = x.style.backgroundColor == "red" ? "gray" : "red";
+}
+
+function setColorR() { 
+    var x = document.getElementById('R');
+    x.style.backgroundColor = x.style.backgroundColor == "orange" ? "gray" : "orange";
+}
+
+function setColorL() {
+    var x = document.getElementById('L');
+    x.style.backgroundColor = x.style.backgroundColor == "orange" ? "gray" : "orange";
+}
+
+function stopColor() {
+    clearInterval(myVar);
+}
+
+function HZOnOff () {
+  HZEnable = ! HZEnable;
+  if (HZEnable) {
+    toggleIntervalHZ();
+    connection.send("I"); 
+  } else {
+    toggleIntervalHZ();
+    connection.send("J");
+    clearInterval(intervalIdHZ);
+    document.getElementById('HZ').style.backgroundColor = '#c41e0b';
+  }
+}
+
+function toggleIntervalHZ() {
+  if (!intervalIdHZ) {
+    intervalIdHZ = setInterval(function(){setColorHZ();}, 600);
+  } else {
+    clearInterval(intervalIdHZ);
+    intervalIdHZ = null;
+  }
+}
+
+function toggleIntervalR() {
+  if (!intervalIdR) {
+    intervalIdR = setInterval(function(){setColorR();}, 600);
+  } else {
+    clearInterval(intervalIdR);
+    intervalIdR = null;
+  }
+}
+
+function toggleIntervalL() {
+  if (!intervalIdL) {
+    intervalIdL = setInterval(function(){setColorL();}, 600);
+  } else {
+    clearInterval(intervalIdL);
+    intervalIdL = null;
+  }
+}
+
+function FlashL () {
+  LEnable = ! LEnable;
+  if (LEnable) {   
+  if (REnable) {
+    toggleIntervalR();
+    connection.send("K");
+    clearInterval(intervalIdR);
+    document.getElementById('R').style.backgroundColor = '#ffa64d';
+  }
+ connection.send("K");
+   toggleIntervalL();
+ }  else {
+    toggleIntervalL();
+    connection.send("L");
+    document.getElementById('L').style.backgroundColor = '#ffa64d';
+ }
+}
+
+function gameMode () {
+    connection.send("S");
+}
+
+function lightsMode () {
+    connection.send("T");
+}
+
+
+function FlashR () {
+  REnable = ! REnable;
+  if (REnable) {   
+  if (LEnable) {
+    toggleIntervalL();
+    connection.send("L");
+    clearInterval(intervalIdL);
+    document.getElementById('L').style.backgroundColor = '#ffa64d';
+  }
+  connection.send("M");
+  toggleIntervalR();
+ }  else {
+    toggleIntervalR();
+    connection.send("N");
+    document.getElementById('R').style.backgroundColor = '#ffa64d';
+  }
+}
+
+function BeepBeep () {
+    connection.send("U");
+}
+
+
+/**
+* Function to toggle bgColor
+* @param array colors Array of colors to set
+**/
+function toggleColors( colors ){
+    clearTimeout(timer);
+    var counter = 0
+    var change = function(){
+        document.getElementById('HZ').bgColor = colors[ counter%colors.length ];// Change the color
+        counter ++;
+        if( colors.length > 1 )
+            timer = setTimeout(change, miliseconds); // Call the changer
+    };
+
+    change();
+}
+
+</script>
+</body>
+</html>
+
+
+  
